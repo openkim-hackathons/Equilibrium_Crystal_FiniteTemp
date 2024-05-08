@@ -1,0 +1,7 @@
+LAMMPS (2 Aug 2023 - Update 1)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+#Generate a periodic crystal and compute the lattice parameters at finite temperature
+
+# Set logfile
+log output/lmp_T{rpls_temp}.log

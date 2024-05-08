@@ -1,0 +1,38 @@
+2024-05-07:20:58:38UTC * 0 * information * 0x55555573c690 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 1 * information * 0x55555573c690 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_Collections'.
+2024-05-07:20:58:38UTC * 2 * information * 0_Collections * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x55555573c690'.
+2024-05-07:20:58:38UTC * 3 * information * 0_Collections * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:20:58:38UTC * 0 * information * 0x55555573c690 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 0 * information * 0x55555573caf0 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 1 * information * 0x55555573caf0 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0x55555573c690_Collections'.
+2024-05-07:20:58:38UTC * 2 * information * 0x55555573c690_Collections * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x55555573caf0'.
+2024-05-07:20:58:38UTC * 1 * warning * 0x55555573c690 * KIM_ModelImplementation.cpp:870 * Use of the GetParameterFileName(0, 0x2aaaab2a9700). function is deprecated. Please use GetParameterFileBasename() instead.
+2024-05-07:20:58:38UTC * 3 * information * 0x55555573c690_Collections * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:20:58:38UTC * 2 * information * 0x55555573c690 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_Model'.
+2024-05-07:20:58:38UTC * 3 * information * 0_Model * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x55555573c690'.
+2024-05-07:20:58:38UTC * 0 * information * 0x55555573caf0 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 1 * information * 0x55555573caf0 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_Collections'.
+2024-05-07:20:58:38UTC * 2 * information * 0_Collections * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x55555573caf0'.
+2024-05-07:20:58:38UTC * 3 * information * 0_Collections * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:20:58:38UTC * 4 * information * 0_Model * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:20:58:38UTC * 0 * information * 0x555555944040 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 0 * information * 0x5555559440f0 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 1 * information * 0x5555559440f0 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0x555555944040_Collections'.
+2024-05-07:20:58:38UTC * 2 * information * 0x555555944040_Collections * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x5555559440f0'.
+2024-05-07:20:58:38UTC * 1 * warning * 0x555555944040 * KIM_ModelImplementation.cpp:870 * Use of the GetParameterFileName(0, 0x2aaaab2a9330). function is deprecated. Please use GetParameterFileBasename() instead.
+2024-05-07:20:58:38UTC * 3 * information * 0x555555944040_Collections * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:20:58:38UTC * 2 * information * 0x555555944040 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_Model'.
+2024-05-07:20:58:38UTC * 3 * information * 0_Model * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x555555944040'.
+2024-05-07:20:58:38UTC * 0 * information * 0x5555559440f0 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 1 * information * 0x5555559440f0 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_Model_0x5555559440f0'.
+2024-05-07:20:58:38UTC * 2 * information * 0_Model_0x5555559440f0 * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x5555559440f0'.
+2024-05-07:20:58:38UTC * 3 * information * 0_Model_0x5555559440f0 * EAM_Implementation.cpp:1561 * Register argument supportStatus
+2024-05-07:20:58:38UTC * 4 * information * 0_Model_0x5555559440f0 * EAM_Implementation.cpp:1580 * Register callback supportStatus
+2024-05-07:20:58:38UTC * 5 * information * 0_Model_0x5555559440f0 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_ComputeArguments'.
+2024-05-07:20:58:38UTC * 6 * information * 0_ComputeArguments * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0_Model_0x5555559440f0'.
+2024-05-07:20:58:38UTC * 0 * information * 0x555555742f80 * KIM_LogImplementation.cpp:107 * Log object created.  Default verbosity level is 'information'.
+2024-05-07:20:58:38UTC * 1 * information * 0x555555742f80 * KIM_LogImplementation.cpp:242 * Log object renamed.  ID changed to '0_Collections'.
+2024-05-07:20:58:38UTC * 2 * information * 0_Collections * KIM_LogImplementation.cpp:246 * Log object renamed.  ID changed from '0x555555742f80'.
+2024-05-07:20:58:38UTC * 3 * information * 0_Collections * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:21:01:12UTC * 0 * information * 0x1423f50_0xedce30 * KIM_LogImplementation.cpp:119 * Log object destroyed.
+2024-05-07:21:01:12UTC * 0 * information * 0x1423f50 * KIM_LogImplementation.cpp:119 * Log object destroyed.
