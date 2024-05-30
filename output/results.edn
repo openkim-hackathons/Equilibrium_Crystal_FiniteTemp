@@ -1,0 +1,40 @@
+{
+    "property-id" "tag:staff@noreply.openkim.org,2023-02-21:property/crystal-structure-npt" 
+    "instance-id" 1 
+    "prototype-label" {
+        "source-value" "AB_cP2_221_a_b"
+    } 
+    "stoichiometric-species" {
+        "source-value" [
+            "Al" 
+            "Co"
+        ]
+    } 
+    "a" {
+        "source-value" 2.82 
+        "source-unit" "angstrom"
+    } 
+    "library-prototype-label" {
+        "source-value" "AB_cP2_221_b_a"
+    } 
+    "short-name" {
+        "source-value" [
+            "CsCl"
+        ]
+    } 
+    "cell-cauchy-stress" {
+        "source-value" [
+            0.0 
+            0.0 
+            0.0 
+            0.0 
+            0.0 
+            0.0
+        ] 
+        "source-unit" "eV/angstrom^3"
+    } 
+    "temperature" {
+        "source-value" 0.0 
+        "source-unit" "K"
+    }
+}

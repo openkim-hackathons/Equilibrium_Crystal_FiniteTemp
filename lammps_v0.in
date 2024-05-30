@@ -1,0 +1,60 @@
+#Generate a periodic crystal and compute the lattice parameters at finite temperature
+
+# Set logfile
+log output/lmp_T{rpls_temp}.log
+
+#General
+kim init    ${model} metal
+
+#Periodic boundary condition along three dimensions
+boundary    p p p
+
+#Timestep for the total time simulation
+timestep    0.001 
+
+#Read the lattice parameter data, simulation box and crystal
+read_data   atoms.lammpsdata
+change_box  all triclinic
+
+#Select potential and element
+kim interactions ${elements}
+mass            1  26.98
+mass            2  58.93 
+
+#Define variables in proper units
+variable tempe equal ${temperature}
+variable natoms equal count(all)
+variable eperatom equal pe/${natoms}
+
+# create initial velocities consistent with the chosen temperature
+velocity      all create ${temperature} 17 mom yes rot yes
+
+#set NPT ensemble for all atoms
+fix 	ensemble all npt temp ${temperature} ${temperature} 0.01 x 0.0 0.0 0.1 y 0.0 0.0 0.1 z 0.0 0.0 0.1 xy 0.0 0.0 0.1 yz 0.0 0.0 0.1 xz 0.0 0.0 0.1
+
+# compute the time averages of pressure, temperature, and volume, respectively
+
+#Set up convergence check with kim-convergence
+python run_length_control input 4 SELF 1 variable tempe format piss file run_length_control.py
+
+#invoke the python function
+python run_length_control invoke
+
+#store unwrapped coordinates for every atom
+compute unwrappedPos all property/atom xu yu zu
+
+#average the unwrapped positions
+fix avePos all ave/atom 1 100 1000 c_unwrappedPos[1] c_unwrappedPos[2] c_unwrappedPos[3]
+
+#Dump the average unwrapped positions
+dump avePosDump all custom 1000 output/averagepos.dump id type f_avePos[1] f_avePos[2] f_avePos[3]
+dump_modify avePosDump first yes
+
+#output configuratin
+dump    mycrystal all atom 1 crystal.dump    
+thermo_style custom cella cellb cellc cellalpha cellbeta cellgamma temp
+thermo  10
+run     1000
+
+
+

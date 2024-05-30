@@ -6,23 +6,23 @@ from lammps import lammps
 import kim_convergence as cr
 
 # Initial run length
-INITIAL_RUN_LENGTH: int = 50
+INITIAL_RUN_LENGTH: int = 10000
 # Run length increasing factor
 RUN_LENGTH_FACTOR: float = 1
 # The maximum run length represents a cost constraint.
-MAX_RUN_LENGTH: int = 20 * INITIAL_RUN_LENGTH
+MAX_RUN_LENGTH: int = 1000 * INITIAL_RUN_LENGTH
 # The maximum number of steps as an equilibration hard limit. If the
 # algorithm finds equilibration_step greater than this limit it will fail.
 # For the default None, the function is using `maximum_run_length // 2` as
 # the maximum equilibration step.
-MAX_EQUILIBRATION_STEP: Optional[int] = None
+MAX_EQUILIBRATION_STEP: Optional[int] = 500 * INITIAL_RUN_LENGTH
 # Maximum number of independent samples.
-MINIMUM_NUMBER_OF_INDEPENDENT_SAMPLES: int = 300
+MINIMUM_NUMBER_OF_INDEPENDENT_SAMPLES: int = None
 # A relative half-width requirement or the accuracy parameter. Target value
 # for the ratio of halfwidth to sample mean. If n_variables > 1,
 # relative_accuracy can be a scalar to be used for all variables or a 1darray
 # of values of size n_variables.
-RELATIVE_ACCURACY: float = 0.1
+RELATIVE_ACCURACY: float = 0.05
 ABSOLUTE_ACCURACY: Optional[float] = None
 # Probability (or confidence interval) and must be between 0.0 and 1.0, and
 # represents the confidence for calculation of relative halfwidths estimation.

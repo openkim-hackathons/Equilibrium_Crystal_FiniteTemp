@@ -4,57 +4,131 @@
 log output/lmp_T{rpls_temp}.log
 
 #General
-kim init    ${model} metal
+kim init    ${model_name} metal unit_conversion_mode
 
 #Periodic boundary condition along three dimensions
 boundary    p p p
 
-#Timestep for the total time simulation
-timestep    0.001 
+#Explicitly include neighbour list command so that it can be changed conveniently
+#neigh_modify delay 0 every 1 check yes one 200
 
 #Read the lattice parameter data, simulation box and crystal
 read_data   atoms.lammpsdata
 change_box  all triclinic
 
-#Select potential and element
-kim interactions ${elements}
-mass            1  26.98
-mass            2  58.93 
+# Convert box and all atomic positions to the correct units. {_u_distance} and {v__u_distance} is the scaling to correct metal units
+change_box all x scale ${_u_distance} &
+               y scale ${_u_distance} &
+               z scale ${_u_distance} &
+               xy final $(xy*v__u_distance) &
+               xz final $(xz*v__u_distance) &
+               yz final $(yz*v__u_distance) &
+               remap
 
-#Define variables in proper units
-variable tempe equal ${temperature}
-variable natoms equal count(all)
-variable eperatom equal pe/${natoms}
+#Select potential and element
+kim interactions ${species}
+mass            1  26.98
+mass            2  58.93
 
 # create initial velocities consistent with the chosen temperature
-velocity      all create ${temperature} 17 mom yes rot yes
+velocity all create $(v_temperature*v__u_temperature) ${temperature_seed}
 
 #set NPT ensemble for all atoms
-fix 	ensemble all npt temp ${temperature} ${temperature} 0.01 x 0.0 0.0 0.1 y 0.0 0.0 0.1 z 0.0 0.0 0.1 xy 0.0 0.0 0.1 yz 0.0 0.0 0.1 xz 0.0 0.0 0.1
+fix NPT all npt temp $(v_temperature*v__u_temperature) $(v_temperature*v__u_temperature) $(v_temperature_damping*v__u_time) tri $(v_pressure*v__u_pressure) $(v_pressure*v__u_pressure) $(v_pressure_damping*v__u_time)
+# x 0.0 0.0 0.1 y 0.0 0.0 0.1 z 0.0 0.0 0.1 xy 0.0 0.0 0.1 yz 0.0 0.0 0.1 xz 0.0 0.0 0.1
 
-# compute the time averages of pressure, temperature, and volume, respectively
+# Set timestep.
+timestep $(v_timestep*v__u_time)
 
-#Set up convergence check with kim-convergence
-python run_length_control input 4 SELF 1 variable tempe format piss file run_length_control.py
+# Compute ke so that we can use it in a variable.
+compute thermo_ke all ke
 
-#invoke the python function
+# Define variables in proper units.
+variable pe_metal equal "c_thermo_pe/v__u_energy"
+variable ke_metal equal "c_thermo_ke/v__u_energy"
+variable temp_metal equal "c_thermo_temp/v__u_temperature"
+variable press_metal equal "c_thermo_press/v__u_pressure"
+variable vol_metal equal vol/${_u_distance}/${_u_distance}/${_u_distance}
+variable xlo_metal equal xlo/${_u_distance} # xlo, ylo, and zlo are the origin of the orthogonal box
+variable xhi_metal equal xhi/${_u_distance} # The orthogonal box extends to (xhi, yhi and zhi)
+variable ylo_metal equal ylo/${_u_distance}
+variable yhi_metal equal yhi/${_u_distance}
+variable zlo_metal equal zlo/${_u_distance}
+variable zhi_metal equal zhi/${_u_distance}
+variable xy_metal equal xy/${_u_distance}
+variable xz_metal equal xz/${_u_distance}
+variable yz_metal equal yz/${_u_distance}
+# Lammps does not offer a simple compute command for the enthalpy (as for ke).
+# Lammps can only include the enthalpy in its thermo output.
+# Since we want to convert the units of the enthalpy, however, we have to define it ourselves.
+# In metal units: 1 bar Angstrom^3 = 6.241509074460762e-7 eV
+variable enthalpy_metal equal "v_pe_metal + v_ke_metal + v_press_metal * v_vol_metal * 6.241509074460762e-7"
+
+# Set up logging of thermodynamic information.
+thermo_style custom step v_pe_metal v_ke_metal v_temp_metal v_press_metal v_vol_metal &
+                         v_xlo_metal v_xhi_metal v_ylo_metal v_yhi_metal v_zlo_metal v_zhi_metal &
+                         v_xy_metal v_xz_metal v_yz_metal v_enthalpy_metal
+thermo ${number_sampling_timesteps}
+
+# Store unwrapped coordinates for every atom. 
+# Note that Lammps cannot store scaled unwrapped coordinates (it can only dump them).
+# This is why we have to implement the scaling ourselves.
+compute up all property/atom xu yu zu
+
+# In Lammps, the unscaled (x, y, z) coordinates are connected to the scaled (xs, ys, zs) 
+# coordinates as (x-xlo, y-ylo, z-zlo) = xs a + ys b + zs c, where (a, b, c) are the 
+# non-orthogonal vectors of the simulation box edges (see https://docs.lammps.org/dump.html). 
+# This means that (x, y, z)^T = M (xs, ys, zs)^T, where we used matrix multiplication and the 
+#  matrix M is given by (see https://docs.lammps.org/Howto_triclinic.html):
+#     (xhi-xlo    xy        xz  )
+# M = (   0    yhi - ylo    yz  )
+#     (   0       0      zhi-zlo)
+# This matrix can be inverted to yield the equations that are implemented below to obtain the scaled 
+# unwrapped positions from the unwrapped positions.
+# Note that for the scaled coordinates no unit conversion is necessary.
+variable xsu atom "(c_up[1]-xlo)/(xhi-xlo) - (xy*(c_up[2]-ylo))/((xhi-xlo)*(yhi-ylo)) + ((xy*yz-(yhi-ylo)*xz)*(c_up[3]-zlo))/((xhi-xlo)*(yhi-ylo)*(zhi-zlo))"
+variable ysu atom "(c_up[2]-ylo)/(yhi-ylo) - (yz*(c_up[3]-zlo))/((yhi-ylo)*(zhi-zlo))"
+variable zsu atom "(c_up[3]-zlo)/(zhi-zlo)"
+
+# Since Lammps can dump scaled unwrapped coordinates, one can test above variables by including the following two lines:
+# dump test all custom 10000 output/test.dump.* id xsu ysu zsu v_xsu v_ysu v_zsu
+# dump_modify test delay 1000
+
+# Average the scaled unwrapped positions.
+# Note that kim-convergence interrupts simulations after 10000 timesteps.
+# We write out the average scaled unwrapped positions after every 10000 timesteps.
+fix avePos all ave/atom 1 10000 10000 v_xsu v_ysu v_zsu
+dump avePosDump all custom 10000 ${average_position_filename} id f_avePos[1] f_avePos[2] f_avePos[3]
+
+# Temperature may be off because of rigid bodies or SHAKE constraints.
+# See https://docs.lammps.org/velocity.html
+run 0
+velocity all scale $(v_temperature*v__u_temperature)
+
+#Set up convergence check with kim-convergence.
+python run_length_control input 6 SELF 1 variable vol_metal variable temp_metal format pissss file run_length_control.py
+
+#invoke the python function to run_length_control untill converged
 python run_length_control invoke
 
-#store unwrapped coordinates for every atom
-compute unwrappedPos all property/atom xu yu zu
+# Print the final volume.
+print ${vol_metal} screen no file output/final_volume_equilibration.dat
 
-#average the unwrapped positions
-fix avePos all ave/atom 1 100 1000 c_unwrappedPos[1] c_unwrappedPos[2] c_unwrappedPos[3]
+# Reset.
+unfix NPT
+unfix avePos
+unfix cr_fix  # From run_length_control.py
+undump avePosDump
+reset_timestep 0
 
-#Dump the average unwrapped positions
-dump avePosDump all custom 1000 output/averagepos.dump id type f_avePos[1] f_avePos[2] f_avePos[3]
-dump_modify avePosDump first yes
+# Write the initial starting file for a true simulation.
+write_restart ${write_restart_filename}
 
 #output configuratin
-dump    mycrystal all atom 1 crystal.dump    
-thermo_style custom cella cellb cellc cellalpha cellbeta cellgamma temp
-thermo  10
-run     1000
+#dump    mycrystal all atom 1 crystal.dump    
+#thermo_style custom cella cellb cellc cellalpha cellbeta cellgamma temp
+#thermo  10
+#run     1000
 
 
 
